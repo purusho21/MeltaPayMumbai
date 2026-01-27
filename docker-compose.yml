@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  app:
+    image: php:8.2-fpm
+    container_name: meltapay_app
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - meltapay-network
+
+  web:
+    image: nginx:alpine
+    container_name: meltapay_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./:/var/www/html
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - app
+    networks:
+      - meltapay-network
+
+  db:
+    image: mysql:8.0
+    container_name: meltapay_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: habbpos
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - meltapay-network
+
+networks:
+  meltapay-network:
+    driver: bridge
+
+volumes:
+  dbdata:
