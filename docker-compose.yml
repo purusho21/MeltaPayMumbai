@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: php:8.2-fpm
+    image: php:8.2-fpm-buster
     container_name: meltapay_app
     working_dir: /var/www/html
     volumes:
